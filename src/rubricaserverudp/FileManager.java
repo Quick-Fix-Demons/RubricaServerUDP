@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -21,13 +19,13 @@ import java.util.logging.Logger;
 public class FileManager {
     public void serializza(List<Contatto> contatti) throws IOException {
         // Serializzazione su file .bin
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("save.bin"));
-        oos.writeObject(contatti);            
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("rubrica.bin"));
+        oos.writeObject(contatti);
         oos.close();
     }
     
     public List<Contatto> deserializza() throws IOException, ClassNotFoundException {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("save.bin"));
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("rubrica.bin"));
         List<Contatto> contatti= (List<Contatto>)ois.readObject();
         return contatti;
     }

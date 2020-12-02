@@ -10,18 +10,14 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * @author Alessio
+ * @author Quick Fix Demons
  */
 public class Main {
 
@@ -35,7 +31,15 @@ public class Main {
             byte[] ricevi = new byte[1024];
             DatagramPacket request = new DatagramPacket(ricevi, ricevi.length);
             
-            List<Contatto> contatti = new ArrayList<>();
+            FileManager fm = new FileManager();
+            List<Contatto> contatti;
+            try {
+                contatti = fm.deserializza();
+            }
+            catch (IOException | ClassNotFoundException e) {
+                System.out.println("Primo avvio.");
+                contatti = new ArrayList<>();
+            }
             
             while (true) {
                 socket.receive(request);
@@ -87,6 +91,12 @@ public class Main {
                 }
                 DatagramPacket response = new DatagramPacket(risposta.getBytes(), risposta.getBytes().length, clientAddress, clientPort);
                 socket.send(response);
+                try {
+                    fm.serializza(contatti);
+                }
+                catch(IOException e) {
+                    e.printStackTrace();
+                }
             }
         } catch (SocketException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

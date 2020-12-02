@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author Alessio
+ * @author Quick Fix Demons
  */
 public class Contatto implements Serializable {
     private String nomeContatto;

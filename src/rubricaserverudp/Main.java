@@ -49,22 +49,22 @@ public class Main {
             
             while (true) {
                 socket.receive(request);
+                System.out.println(new String(request.getData()).trim());
                 String[] ricevuto = new String(request.getData()).trim().split(" - ");
                 InetAddress clientAddress = request.getAddress();
                 int clientPort = request.getPort();
                 String risposta = "";
                 System.out.println("Ricevuta richiesta con codice: " + ricevuto[0]);
-                if(Integer.parseInt(ricevuto[0].trim()) == 0) {
+                if(Integer.parseInt(ricevuto[0]) == 0) {
                     for(int i = 0; i<contatti.size(); i++) {
                         if(ricevuto[1].equals(contatti.get(i).getNomeContatto())) {
                             risposta = contatti.get(i).getNomeContatto() + " - " + contatti.get(i).getNumero();
-                            System.out.println(risposta + " - 1");
                             break;
                         }
                     }
                     if(risposta == "") risposta = "Contatto non trovato.";
                 }
-                else if(Integer.parseInt(ricevuto[0].trim()) == 1) {
+                else if(Integer.parseInt(ricevuto[0]) == 1) {
                     for(int i = 0; i<contatti.size(); i++) {
                         if(ricevuto[1].equals(contatti.get(i).getNumero())) {
                             risposta = contatti.get(i).getNomeContatto() + " - " + contatti.get(i).getNumero();
@@ -73,12 +73,11 @@ public class Main {
                     }
                     if(risposta == "") risposta = "Contatto non trovato.";
                 }
-                else if(Integer.parseInt(ricevuto[0].trim()) == 2) {
+                else if(Integer.parseInt(ricevuto[0]) == 2) {
                     contatti.add(new Contatto(ricevuto[1], ricevuto[2]));
                     risposta = "Contatto \"" + ricevuto[1] + "\" aggiunto con successo.";
-                    System.out.println(risposta + " - 2");
                 }
-                else if(Integer.parseInt(ricevuto[0].trim()) == 3) {
+                else if(Integer.parseInt(ricevuto[0]) == 3) {
                     for(int i = 0; i<contatti.size(); i++) {
                         if(ricevuto[2].equals(contatti.get(i).getNomeContatto())) {
                             Contatto old = contatti.get(i);
@@ -96,20 +95,20 @@ public class Main {
                         }
                     }
                 }
-                else if(Integer.parseInt(ricevuto[0].trim()) == 4) {
+                else if(Integer.parseInt(ricevuto[0]) == 4) {
                     for(int i = 0; i<contatti.size(); i++) {
                         risposta += contatti.get(i).getNomeContatto() + " - " + contatti.get(i).getNumero() + "\n";
-                        System.out.println(risposta + " - 3");
                     }
                     if(risposta == "") risposta = "Nessun contatto trovato.";
                 }
                 else {
                     risposta = "Opzione non valida.";
                 }
+                
+                System.out.println(risposta);
                 DatagramPacket response = new DatagramPacket(risposta.getBytes(), risposta.getBytes().length, clientAddress, clientPort);
                 socket.send(response);
                 try {
-                    
                     fm.serializza(contatti);
                 }
                 catch(IOException e) {

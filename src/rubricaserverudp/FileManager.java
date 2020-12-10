@@ -5,12 +5,17 @@
  */
 package rubricaserverudp;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.lang.reflect.Type;
 
 /**
  *
@@ -18,15 +23,27 @@ import java.util.List;
  */
 public class FileManager {
     public void serializza(List<Contatto> contatti) throws IOException {
-        // Serializzazione su file .bin
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("rubrica.bin"));
-        oos.writeObject(contatti);
-        oos.close();
+        // Serializzazione su file .json
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        //System.out.println(gson.toJson(contatti));
+        FileWriter fw;
+        try {
+            fw = new FileWriter("rubrica.json");
+            gson.toJson(contatti, fw);
+            fw.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public List<Contatto> deserializza() throws IOException, ClassNotFoundException {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream("rubrica.bin"));
-        List<Contatto> contatti= (List<Contatto>)ois.readObject();
+        Gson gson = new Gson();
+
+        // Da file .json a lista
+        Type userListType = new TypeToken<ArrayList<Contatto>>(){}.getType();
+ 
+        ArrayList<Contatto> contatti = gson.fromJson(new FileReader("rubrica.json"), userListType);
+
         return contatti;
     }
 }
